@@ -1,1 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>Broken Arrow Linux — LFS-built distro by David Linton-Halliday</title>
+  <meta name="description" content="Broken Arrow Linux is a Linux From Scratch (LFS) based project by David Linton-Halliday — a practical, learning-first distro build with documentation, downloads, and source notes." />
+
+  <!-- ✅ If using GitHub Pages, replace with your real URL -->
+  <link rel="canonical" href="https://davidlintonhalliday.github.io/Linux-Broken-Arrow/" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Broken Arrow Linux — LFS-built distro by David Linton-Halliday" />
+  <meta property="og:description" content="A Linux From Scratch build project: downloads, LFS links, and source notes. Built step-by-step as a learning-first distro." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://davidlintonhalliday.github.io/Linux-Broken-Arrow/" />
+  <!-- ✅ Optional: add an image later at /assets/cover.jpg -->
+  <meta property="og:image" content="assets/cover.jpg" />
+
+  <!-- JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Broken Arrow Linux",
+    "applicationCategory": "OperatingSystem",
+    "operatingSystem": "Linux",
+    "author": {
+      "@type": "Person",
+      "name": "David Linton-Halliday"
+    },
+    "description": "A Linux From Scratch (LFS) based distro project built and documented by David Linton-Halliday.",
+    "url": "https://davidlintonhalliday.github.io/Linux-Broken-Arrow/"
+  }
+  </script>
+
+  <style>
+    :root{
+      --bg1:#0b1020; --bg2:#111b33;
+      --card:#0f172a; --card2:#111c3a;
+      --text:#e7ecff; --muted:#a9b3d6;
+      --accent:#ffb703; --accent2:#ff6b6b;
+      --radius:16px; --shadow:0 10px 30px rgba(0,0,0,0.35);
+      --max:1080px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;
+      color:var(--text);
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(255,183,3,0.12), transparent 60%),
+                  radial-gradient(900px 500px at 80% 10%, rgba(255,107,107,0.10), transparent 55%),
+                  linear-gradient(180deg, var(--bg1), var(--bg2));
+      background-attachment: fixed;
+      line-height:1.6;
+    }
+
+    a{color:var(--accent); text-decoration:none}
+    a:hover{color:#ffd36a}
+
+    /* Header */
+    header{
+      position:sticky; top:0; z-index:50;
+      background:rgba(11,16,32,0.72);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+    .wrap{max-width:var(--max); margin:0 auto; padding:16px 18px}
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between; gap:16px;
+    }
+
+    .brand{display:flex; gap:12px; align-items:center}
+    .logo{
+      width:44px; height:44px; border-radius:12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display:flex; align-items:center; justify-content:center;
+      color:#0b1020; font-weight:900; letter-spacing:0.5px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.35);
+      user-select:none;
+    }
+    .brand-title{font-weight:900; line-height:1.1}
+    .brand-sub{font-size:12.5px; color:var(--muted)}
+
+    nav{display:flex; gap:14px; align-items:center; flex-wrap:wrap}
+    nav a{
+      color:var(--text);
+      font-weight:700;
+      font-size:14px;
+      padding:8px 10px;
+      border-radius:10px;
+    }
+    nav a:hover{background:rgba(255,255,255,0.06)}
+    .active{color:var(--accent) !important; background:rgba(255,183,3,0.12)}
+
+    .btn{
+      display:inline-block;
+      background: var(--accent);
+      color:#0b1020;
+      padding:10px 14px;
+      border-radius:12px;
+      font-weight:900;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+    }
+    .btn:hover{filter:brightness(1.05)}
+    .btn-outline{
+      display:inline-block;
+      border:1px solid rgba(255,255,255,0.18);
+      color:var(--text);
+      padding:10px 14px;
+      border-radius:12px;
+      font-weight:800;
+    }
+    .btn-outline:hover{background:rgba(255,255,255,0.06)}
+
+    /* Mobile nav */
+    .menu-btn{
+      display:none;
+      border:1px solid rgba(255,255,255,0.18);
+      background:rgba(255,255,255,0.04);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .nav-row{display:flex; align-items:center; gap:12px}
+    .nav-collapsible{display:flex}
+
+    @media (max-width: 860px){
+      .menu-btn{display:inline-block}
+      .nav-collapsible{
+        display:none;
+        width:100%;
+        padding-top:12px;
+      }
+      .nav-collapsible.open{display:block}
+      nav{gap:8px}
+      nav a{display:inline-block; margin:4px 6px 0 0}
+      .topbar{flex-wrap:wrap; align-items:flex-start}
+    }
+
+    /* Layout */
+    main{max-width:var(--max); margin:0 auto; padding:28px 18px 44px}
+    .hero{
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:28px;
+      overflow:hidden;
+      position:relative;
+    }
+    .hero:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(600px 240px at 20% 0%, rgba(255,183,3,0.20), transparent 60%),
+                  radial-gradient(500px 220px at 80% 10%, rgba(255,107,107,0.18), transparent 55%);
+      pointer-events:none;
+    }
+    .hero > *{position:relative}
+
+    h1{margin:0 0 10px; font-size: clamp(28px, 4vw, 44px); line-height:1.15}
+    .lead{color:var(--muted); margin:0 0 18px; font-size: clamp(15px, 2vw, 18px)}
+    .cta{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:16px;
+      margin-top:16px;
+    }
+    .card{
+      grid-column: span 6;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:18px;
+    }
+    .card h2{margin:0 0 8px; font-size:20px}
+    .card p{margin:0; color:var(--muted)}
+    .badge{
+      display:inline-block;
+      font-size:12px;
+      font-weight:900;
+      color:#0b1020;
+      background:rgba(255,183,3,0.9);
+      padding:6px 10px;
+      border-radius:999px;
+      margin-bottom:10px;
+    }
+    @media (max-width: 900px){
+      .card{grid-column: span 12}
+    }
+
+    /* Parallax */
+    .parallax{
+      margin-top:18px;
+      border-radius: var(--radius);
+      overflow:hidden;
+      min-height: 240px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+
+      background-image:
+        linear-gradient(180deg, rgba(11,16,32,0.35), rgba(11,16,32,0.75)),
+        url("assets/parallax.jpg"); /* ✅ add later, or leave blank */
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+
+      border:1px solid rgba(255,255,255,0.08);
+      box-shadow: var(--shadow);
+    }
+    .parallax h2{
+      margin:0;
+      padding:0 18px;
+      font-size: clamp(20px, 3vw, 30px);
+      text-shadow:0 8px 30px rgba(0,0,0,0.55);
+    }
+    @media (max-width: 767px){
+      .parallax{background-attachment: scroll}
+    }
+
+    /* Footer */
+    footer{
+      margin-top:34px;
+      border-top:1px solid rgba(255,255,255,0.10);
+      color:var(--muted);
+      background: rgba(11,16,32,0.65);
+      backdrop-filter: blur(8px);
+    }
+    .foot{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:18px;
+      text-align:center;
+      font-size:14px;
+    }
+    small{display:block; margin-top:8px; opacity:0.9}
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">BA</div>
+          <div>
+            <div class="brand-title">Broken Arrow Linux</div>
+            <div class="brand-sub">An LFS build journey • Docs • Downloads • Source notes</div>
+          </div>
+        </div>
+
+        <div class="nav-row">
+          <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navArea">Menu</button>
+          <a class="btn" href="#download">Get it</a>
+        </div>
+
+        <div class="nav-collapsible" id="navArea">
+          <nav>
+            <a class="active" href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="downloads.html">Downloads</a>
+            <a href="LFS%20Link.html">LFS Link</a>
+            <a href="Broken%20Arrow%20Source%20Codes.html">Source Codes</a>
+            <a href="#docs">Docs</a>
+            <a href="#contact">Contact</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <span class="badge">Linux From Scratch project</span>
+      <h1>Broken Arrow Linux</h1>
+      <p class="lead">
+        A learning-first Linux distro build — assembled step-by-step, documented clearly, and shared so others can build something
+        they never thought they could.
+      </p>
+
+      <div class="cta">
+        <a class="btn" href="downloads.html" id="download">Download / ISO</a>
+        <a class="btn-outline" href="LFS%20Link.html">LFS book & references</a>
+        <a class="btn-outline" href="Broken%20Arrow%20Source%20Codes.html">Source notes</a>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2>What this is</h2>
+        <p>
+          Broken Arrow Linux is built from the LFS approach: understand the system, compile it, and own every part of it.
+          This site tracks the build, decisions, and what I’m polishing next.
+        </p>
+      </section>
+
+      <section class="card" id="docs">
+        <h2>Documentation</h2>
+        <p>
+          The goal is simple docs that a normal human can follow. If you’re new, start with
+          <a href="LFS%20Link.html">LFS Link</a>, then check <a href="downloads.html">Downloads</a>.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>Roadmap</h2>
+        <p>
+          Bootable base → toolchain confidence → desktop choice → installers/scripts → “polish over time”.
+          This will stay practical, not perfect.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>Why “Broken Arrow”</h2>
+        <p>
+          Because the build is honest: you break things, fix them, learn the truth, and keep moving.
+          The aim is to help others do the same.
+        </p>
+      </section>
+    </div>
+
+    <div class="parallax" role="img" aria-label="Broken Arrow Linux — a build journey">
+      <h2>“Do it once. Do it right. And when it breaks… rebuild it better.”</h2>
+    </div>
+
+    <section class="card" style="grid-column: span 12; margin-top:16px;">
+      <h2>Project links</h2>
+      <p>
+        Repo: <a href="https://github.com/Davidlintonhalliday/Linux-Broken-Arrow" target="_blank" rel="noopener">GitHub — Linux-Broken-Arrow</a><br>
+        If you’re following the same path, keep notes. Your future self will thank you.
+      </p>
+    </section>
+
+    <section class="card" style="grid-column: span 12; margin-top:16px;" id="contact">
+      <h2>Contact</h2>
+      <p>
+        Email: <a href="mailto:davidlintonhalliday@gmail.com">davidlintonhalliday@gmail.com</a><br>
+        YouTube: <a href="https://www.youtube.com/channel/UCyo8kGE2_sHoHtiWxmBZ3JQ" target="_blank" rel="noopener">Channel</a>
+      </p>
+      <small id="last-updated"></small>
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot">
+      © 2025 Broken Arrow Linux — David & Trishie Linton-Halliday
+      <small id="visitor-note">Visitors: (optional counter can be added later)</small>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu
+    const btn = document.getElementById('menuBtn');
+    const nav = document.getElementById('navArea');
+    btn?.addEventListener('click', () => {
+      const open = nav.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    // Last updated
+    const updated = new Date(document.lastModified);
+    const el = document.getElementById("last-updated");
+    if (el) {
+      el.textContent = "Last updated: " + updated.toLocaleDateString("en-AU", {
+        weekday: "short", year: "numeric", month: "long", day: "numeric"
+      });
+    }
+  </script>
+</body>
+</html>
 
