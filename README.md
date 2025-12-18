@@ -1,2 +1,2 @@
-# Linux-Broken-Arrow
-"The Broken Arrow Linux Project"
+# Linux-Black-Lantern
+"The Black Lantern Linux Project"
